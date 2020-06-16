@@ -3,7 +3,7 @@ import '../App.css';
 import { data } from "../data";
 import Navbar from "./Navbar";
 import MovieCard from "./MovieCard";
-import {addMovies} from "../actions";
+import {addMovies, changeTab} from "../actions";
 
 class App extends React.Component {
 
@@ -29,29 +29,37 @@ class App extends React.Component {
     return false;
   }
 
+  handlechangeTab = (val) => {
+    this.props.store.dispatch(changeTab(val));
+  }
+
   render(){
-    const {List} = this.props.store.getState(); // state has {List:[], Fav:[]}
+    const {List, Favourites, showFavTab} = this.props.store.getState(); // state has {List:[], Fav:[]}
     console.log(this.props.store.getState());
+    const displyMovie = showFavTab ? Favourites : List;
     return (
       <div className="App">
         <Navbar />
           <div className="main">
             <div className="tabs">
-              <div className="tab">
+              <div className={`tab ${showFavTab ? "" : "active-tabs"}`} onClick = {() => this.handlechangeTab(false)}>
                 Movies
               </div>
-              <div className="tab">
+              <div className={`tab ${showFavTab ? "active-tabs" : ""}`} onClick = {() => this.handlechangeTab(true)}>
                 Favourites
               </div>
             </div>
             <div className="list">
-              {List.map((movie, index) => (
-                <MovieCard 
-                  movie={movie} 
-                  key={`movies-${index}`} 
-                  dispatch={this.props.store.dispatch}
-                  isFavourite = {this.isFavourite(movie)}
-                />
+              
+              {(displyMovie.length < 1) 
+                ? <div><h3>No Movies Available</h3></div>
+                : displyMovie.map((movie, index) => (
+                  <MovieCard 
+                    movie={movie} 
+                    key={`movies-${index}`} 
+                    dispatch={this.props.store.dispatch}
+                    isFavourite = {this.isFavourite(movie)}
+                  />
               ))}
             </div>
           </div>
