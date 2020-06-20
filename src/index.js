@@ -16,7 +16,7 @@ import rootReducer from "./reducers";
 //     }
 //   }
 // }
-
+//OTHER WAY
 const logger = ({dispatch, action}) => (next) => (action) => {
   console.log("ACTION_TYPE = ", action.type);
   next(action);
